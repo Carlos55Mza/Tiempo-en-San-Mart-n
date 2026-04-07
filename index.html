@@ -50,6 +50,37 @@
             display: inline-flex; align-items: center; gap: 8px; font-size: 1rem;
         }
 
+        /* --- ESTILOS DE LA NUEVA ALERTA --- */
+        .alerta-container {
+            margin-top: 15px;
+            padding: 10px 15px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid rgba(0,0,0,0.1);
+            background: white;
+            transition: all 0.3s ease;
+        }
+        .alerta-zonda { 
+            background: #fff9c4; border: 2px solid #fbc02d; color: #856404; 
+            box-shadow: 0 4px 10px rgba(251, 192, 45, 0.3);
+        }
+        .alerta-sismo { 
+            background: #ffcdd2; border: 2px solid #e53935; color: #b71c1c; 
+            animation: vibrar 0.3s infinite;
+        }
+        @keyframes vibrar {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(2px); }
+            50% { transform: translateX(-2px); }
+            75% { transform: translateX(2px); }
+            100% { transform: translateX(0); }
+        }
+        /* ---------------------------------- */
+
         .weather-main-card {
             background: var(--glass); backdrop-filter: blur(10px);
             border-radius: 25px; border: 2px solid white;
@@ -93,7 +124,6 @@
 
         .visitor-counter { position: fixed; bottom: 10px; left: 10px; z-index: 100; opacity: 0.8; }
 
-        /* ESTILOS SISMOS COMPACTOS */
         .sismo-container {
             background: rgba(255, 255, 255, 0.4); border-radius: 12px; padding: 10px; margin-top: 20px;
             border-left: 4px solid #e74c3c; border: 1px solid rgba(255,255,255,0.5);
@@ -117,6 +147,11 @@
                 <div class="dolar-mini-box">
                     <span class="material-symbols-outlined">payments</span>
                     BLUE: <span id="dolar-val">...</span>
+                </div>
+
+                <div id="alerta-box" class="alerta-container">
+                    <span id="alerta-icon" class="material-symbols-outlined" style="font-size: 18px;">check_circle</span>
+                    <span id="alerta-mensaje">No hay alertas hoy</span>
                 </div>
             </div>
             
@@ -237,6 +272,34 @@
     </div>
 
     <script>
+        // ==========================================
+        // 🚨 CONFIGURACIÓN DE ALERTA RÁPIDA 🚨
+        // Cambiá 'tranquilo' por 'zonda' o 'sismo'
+        // ==========================================
+        const ESTADO_ACTUAL = 'tranquilo'; 
+        // ==========================================
+
+        function manejarAlertas() {
+            const box = document.getElementById('alerta-box');
+            const icon = document.getElementById('alerta-icon');
+            const msj = document.getElementById('alerta-mensaje');
+
+            if (ESTADO_ACTUAL === 'zonda') {
+                box.classList.add('alerta-zonda');
+                icon.innerText = "air";
+                msj.innerText = "ALERTA: Viento Zonda";
+            } else if (ESTADO_ACTUAL === 'sismo') {
+                box.classList.add('alerta-sismo');
+                icon.innerText = "warning";
+                msj.innerText = "PRECAUCIÓN: Sismo Detectado";
+            } else {
+                box.classList.remove('alerta-zonda', 'alerta-sismo');
+                icon.innerText = "check_circle";
+                icon.style.color = "#27ae60";
+                msj.innerText = "No hay alertas hoy";
+            }
+        }
+
         function updateClock() {
             const now = new Date();
             let h = now.getHours();
@@ -265,9 +328,7 @@
 
         async function updateWeatherLocation(val) {
             const parts = val.split(',');
-            const lat = parts[0];
-            const lon = parts[1];
-            const name = parts[2];
+            const lat = parts[0]; const lon = parts[1]; const name = parts[2];
             try {
                 const response = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature&timezone=auto`);
                 const data = await response.json();
@@ -280,7 +341,6 @@
 
         async function updateSismos() {
             try {
-                // Buscamos sismos de magnitud 2.0+ en un radio de 500km de Mendoza
                 const res = await fetch('https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=' + new Date(Date.now() - 604800000).toISOString() + '&latitude=-32.88&longitude=-68.84&maxradiuskm=500&minmagnitude=2.0');
                 const data = await res.json();
                 const lista = document.getElementById('lista-sismos');
@@ -307,7 +367,8 @@
         getDolar();
         updateWeatherLocation("-33.08,-68.47,SAN MARTÍN");
         updateSismos();
-        setInterval(updateSismos, 300000); // Actualiza cada 5 minutos
+        manejarAlertas(); // Iniciamos la alerta
+        setInterval(updateSismos, 300000);
     </script>
 </body>
 </html>

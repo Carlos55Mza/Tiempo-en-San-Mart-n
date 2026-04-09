@@ -387,13 +387,7 @@
             document.getElementById('ampm').innerText = ampm;
             document.getElementById('date').innerText = now.toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long' });
             
-            const icon = document.getElementById('weather-icon');
-            if (now.getHours() >= 20 || now.getHours() <= 6) {
-                icon.innerText = "nightlight"; icon.style.color = "#9b59b6";
-            } else {
-                icon.innerText = "wb_sunny"; icon.style.color = "#fbc02d";
-            }
-        }
+           }
 
         async function getDolar() {
             try {
@@ -404,17 +398,40 @@
         }
 
         async function updateWeatherLocation(val) {
-            const parts = val.split(',');
-            const lat = parts[0]; const lon = parts[1]; const name = parts[2];
-            try {
-                const response = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature&timezone=auto&t=${Date.now()}`);
-                const data = await response.json();
-                document.getElementById('temp').innerText = Math.round(data.current.temperature_2m);
-                document.getElementById('st-val').innerText = Math.round(data.current.apparent_temperature);
-                document.getElementById('hum-display').innerText = `Hum: ${data.current.relative_humidity_2m}%`;
-                document.getElementById('city-display').innerText = name;
-            } catch (error) { console.log("Error Clima"); }
-        }
+    const parts = val.split(',');
+    const lat = parts[0]; const lon = parts[1]; const name = parts[2];
+    const horaActual = new Date().getHours();
+
+    try {
+        // Agregué "weather_code" a la consulta para saber si llueve o hay sol
+        const response = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code&timezone=auto&t=${Date.now()}`);
+        const data = await response.json();
+        
+        document.getElementById('temp').innerText = Math.round(data.current.temperature_2m);
+        document.getElementById('st-val').innerText = Math.round(data.current.apparent_temperature);
+        document.getElementById('hum-display').innerText = `Hum: ${data.current.relative_humidity_2m}%`;
+        document.getElementById('city-display').innerText = name;
+
+        // ESTO ES LO NUEVO: Actualiza el ícono automáticamente
+        const iconoElemento = document.getElementById('weather-icon');
+        const codigoW = data.current.weather_code;
+        
+        // Llamamos a la función que traduce el código en dibujo
+        iconoElemento.innerText = obtenerIconoClima(codigoW, horaActual);
+
+    } catch (error) { console.log("Error Clima"); }
+}
+
+function obtenerIconoClima(codigo, hora) {
+    const esNoche = hora >= 20 || hora <= 6;
+    if (codigo === 0) return esNoche ? 'nightlight' : 'wb_sunny'; 
+    if (codigo <= 3) return esNoche ? 'nights_stay' : 'cloud_queue'; 
+    if (codigo >= 51 && codigo <= 67) return 'rainy'; 
+    if (codigo >= 71 && codigo <= 77) return 'ac_unit'; 
+    if (codigo >= 80 && codigo <= 82) return 'umbrella'; 
+    if (codigo >= 95) return 'thunderstorm'; 
+    return 'cloud'; 
+}
 
         // --- NUEVA FUNCIÓN PARA MARQUESINA NACIONAL ---
         async function actualizarMarquesina() {

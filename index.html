@@ -13,12 +13,25 @@
     background: #2c3e50;
     padding: 15px;
     border-radius: 10px;
-    margin: 20px 0;
+    margin: 20px auto;
     border: 2px solid #e74c3c;
     color: white;
-    clear: both; /* Esto evita que se encime */
+    clear: both;
+    width: 95%;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
 }
-        :root { 
+
+.alerta-container {
+    margin: 20px auto;
+    padding: 15px;
+    border-radius: 12px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: white;
+    min-height: 50px;
+}        :root { 
             --glass: rgba(255, 255, 255, 0.7); 
             --accent: #ff9f43; 
             --money: #0984e3; 
@@ -88,6 +101,26 @@
             padding: 8px 15px; border-radius: 12px; font-weight: 800; 
             display: inline-flex; align-items: center; gap: 8px; font-size: 1rem;
         }
+<div class="editor-zuniga">
+    <h3 style="margin-top:0; font-size: 1rem;">📢 Panel de Alertas Zúñiga</h3>
+    <input type="text" id="input-nueva-alerta" placeholder="Escribí la alerta aquí (ej: Viento Zonda fuerte)..." 
+           style="width: 70%; padding: 8px; border-radius: 5px; border: none;">
+    
+    <button onclick="lanzarAlerta()" class="boton-alerta" 
+            style="background: #e74c3c; color: white; border: none; padding: 8px 15px; border-radius: 5px; font-weight: bold;">
+            PUBLICAR
+    </button>
+    
+    <button onclick="limpiarAlerta()" class="boton-alerta" 
+            style="background: #95a5a6; color: white; border: none; padding: 8px 15px; border-radius: 5px; font-weight: bold;">
+            LIMPIAR
+    </button>
+</div>
+
+<div id="alerta-box" class="alerta-container">
+    <span id="alerta-icon" class="material-symbols-outlined">check_circle</span>
+    <span id="alerta-mensaje">Cargando alertas...</span>
+</div>
 
 // Esperamos a que cargue todo para no romper el reloj ni el clima
 window.addEventListener('load', function() {
@@ -146,7 +179,7 @@ window.addEventListener('load', function() {
 });
 
         .alerta-container {
-            margin-top: 15px; padding: 10px 15px; border-radius: 12px;
+            margin-top: 25px; padding: 10px 15px; border-radius: 12px;
             font-size: 0.85rem; font-weight: 800; display: flex;
             align-items: center; gap: 10px; border: 1px solid rgba(0,0,0,0.1);
             background: white; transition: all 0.3s ease;

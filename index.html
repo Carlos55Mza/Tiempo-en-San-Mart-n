@@ -387,17 +387,38 @@
         document.getElementById('date').innerText = now.toLocaleDateString('es-AR', {weekday:'long', day:'numeric', month:'long'});
     }
 
-// --- EL ENCHUFE: CONEXIÓN CON FIREBASE ---
-const firebaseConfig = {
-    apiKey: "AIzaSyDEwSHLN9du40_SkzU7IzONQdSow9CBqu0",
-    authDomain: "estacion-zuniga.firebaseapp.com",
-    projectId: "estacion-zuniga",
-    storageBucket: "estacion-zuniga.firebasestorage.app",
-    messagingSenderId: "717556109707",
-    appId: "1:717556109707:web:e48a9bc10ac6ec86909f8e",
-    measurementId: "G-6MJPN6CPE1"
-};
+// --- CONEXIÓN SEGURA FIREBASE (Al final del script) ---
+(function() {
+    try {
+        const fConfig = {
+            apiKey: "AIzaSyDEwSHLN9du40_SkzU7IzONQdSow9CBqu0",
+            authDomain: "estacion-zuniga.firebaseapp.com",
+            projectId: "estacion-zuniga",
+            storageBucket: "estacion-zuniga.firebasestorage.app",
+            messagingSenderId: "717556109707",
+            appId: "1:717556109707:web:e48a9bc10ac6ec86909f8e"
+        };
 
+        if (!firebase.apps.length) {
+            firebase.initializeApp(fConfig);
+        }
+
+        const msg = firebase.messaging();
+
+        // Pedir permiso sin romper el resto de la página
+        msg.requestPermission()
+            .then(() => msg.getToken())
+            .then((token) => {
+                console.log("Sistema de alertas listo. Token generado.");
+            })
+            .catch((err) => {
+                console.log("Las alertas móviles están desactivadas o bloqueadas.");
+            });
+            
+    } catch (e) {
+        console.error("Error en Firebase, pero seguimos adelante:", e);
+    }
+})();
 // Esto "prende" la conexión
 if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);

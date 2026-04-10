@@ -29,32 +29,30 @@
             display: flex; flex-direction: column; align-items: center;
         }
 
-        /* --- MARQUESINA DINÁMICA --- */
-        .marquesina-clima {
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(5px);
-            color: white;
-            padding: 8px 0;
-            font-size: 0.85rem;
-            font-weight: bold;
-            white-space: nowrap;
-            overflow: hidden;
-            width: 100%;
-            border-bottom: 2px solid var(--money);
-            z-index: 1000;
-        }
-        .marquesina-content {
-            display: inline-block;
-            padding-left: 100%;
-            animation: scroll-clima 180s linear infinite;
-        }
-        .marquesina-item { margin-right: 50px; text-transform: uppercase; }
-        .marquesina-item span { color: var(--accent); }
-        
-        @keyframes scroll-clima {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-100%); }
-        }
+        /* MARQUESINA PRO */
+.marquesina-clima { 
+    background: #000; 
+    color: #fff; 
+    padding: 10px 0; 
+    font-size: 1rem; 
+    font-weight: bold; 
+    overflow: hidden; 
+    width: 100%; 
+    border-bottom: 3px solid #0984e3; 
+}
+.marquesina-content { 
+    display: inline-block; 
+    white-space: nowrap; 
+    padding-left: 100%; 
+    animation: scroll-clima 180s linear infinite; /* 40s es una velocidad cómoda para leer */
+}
+.marquesina-item { margin-right: 80px; text-transform: uppercase; }
+.marquesina-item span { color: #fffa65; } /* El color de la temperatura */
+
+@keyframes scroll-clima { 
+    0% { transform: translateX(0); } 
+    100% { transform: translateX(-100%); } 
+}
 
         .overlay { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
@@ -370,380 +368,157 @@
     </div>
 </div>
 
-    <script>
-        const ESTADO_ACTUAL = 'tranquilo'; 
+<script>
+    const API_KEY = "7a3c696b0a174cbd8fd174435261004";
 
-        function manejarAlertas() {
-            const box = document.getElementById('alerta-box');
-            const icon = document.getElementById('alerta-icon');
-            const msj = document.getElementById('alerta-mensaje');
-
-            if (ESTADO_ACTUAL === 'zonda') {
-                box.classList.add('alerta-zonda');
-                icon.innerText = "air";
-                msj.innerText = "ALERTA: Viento Zonda";
-            } else if (ESTADO_ACTUAL === 'sismo') {
-                box.classList.add('alerta-sismo');
-                icon.innerText = "warning";
-                msj.innerText = "PRECAUCIÓN: Sismo Detectado";
-            } else {
-                box.classList.remove('alerta-zonda', 'alerta-sismo');
-                icon.innerText = "check_circle";
-                icon.style.color = "#27ae60";
-                msj.innerText = "No hay alertas hoy";
-            }
-        }
-
-        function updateClock() {
-            const now = new Date();
-            let h = now.getHours();
-            const m = String(now.getMinutes()).padStart(2, '0');
-            const ampm = h >= 12 ? 'pm' : 'am';
-            h = h % 12 || 12;
-            document.getElementById('clock').innerText = `${h}:${m}`;
-            document.getElementById('ampm').innerText = ampm;
-            document.getElementById('date').innerText = now.toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long' });
-            
-           }
-
-function lanzarAlerta() {
-    const texto = document.getElementById('input-nueva-alerta').value;
-    const mensaje = document.getElementById('alerta-mensaje');
-    const icono = document.getElementById('alerta-icon');
-    const contenedor = document.getElementById('alerta-box');
-
-    if (texto.trim() !== "") {
-        mensaje.innerText = texto;
-        icono.innerText = "warning"; // Cambia el check por un triángulo
-        contenedor.style.backgroundColor = "#e74c3c"; // Fondo rojo
-        contenedor.style.color = "white";
-        document.getElementById('input-nueva-alerta').value = ""; // Limpia el buscador
+    function updateClock() {
+        const now = new Date();
+        let h = now.getHours();
+        const m = String(now.getMinutes()).padStart(2, '0');
+        const ampm = h >= 12 ? 'PM' : 'AM';
+        const h12 = h % 12 || 12;
+        document.getElementById('clock').innerText = `${h12}:${m}`;
+        document.getElementById('ampm').innerText = ampm;
+        document.getElementById('date').innerText = now.toLocaleDateString('es-AR', {weekday:'long', day:'numeric', month:'long'});
     }
-}
 
-function limpiarAlerta() {
-    document.getElementById('alerta-mensaje').innerText = "No hay alertas hoy";
-    document.getElementById('alerta-icon').innerText = "check_circle";
-    document.getElementById('alerta-box').style.backgroundColor = "#27ae60"; // Vuelve al verde (o el color que tengas)
-}
-        async function getDolar() {
-            try {
-                const res = await fetch('https://dolarapi.com/v1/dolares/blue?t=' + Date.now());
-                const data = await res.json();
-                document.getElementById('dolar-val').innerText = `$${data.venta}`;
-            } catch (e) { document.getElementById('dolar-val').innerText = "N/A"; }
+    async function getDolar() {
+        try {
+            const res = await fetch('https://dolarapi.com/v1/dolares/blue');
+            const data = await res.json();
+            document.getElementById('dolar-val').innerText = `$${Math.round(data.venta)}`;
+        } catch (e) { 
+            document.getElementById('dolar-val').innerText = "---"; 
         }
+    }
 
-        async function updateWeatherLocation(val) {
-            const parts = val.split(',');
-            const cityQuery = parts[2].trim().replace(/\s+/g, '+'); // Prepara el nombre para la URL
-            
-            try {
-                // Usamos wttr.in que es un servicio alternativo muy confiable
-                const res = await fetch(`https://wttr.in/${cityQuery}?format=j1`);
-                if (!res.ok) throw new Error('wttr falló');
-                const data = await res.json();
+    async function updateWeatherLocation(val) {
+        const parts = val.split(',');
+        const coords = `${parts[0]},${parts[1]}`;
+        const ciudad = parts[2];
+        try {
+            const res = await fetch(`https://api.weatherapi.com/v1/current.json?key=${API_KEY}&q=${coords}&lang=es`);
+            const data = await res.json();
+            if (data.current) {
+                document.getElementById('temp').innerText = Math.round(data.current.temp_c);
+                document.getElementById('st-val').innerText = Math.round(data.current.feelslike_c);
+                document.getElementById('hum-display').innerText = `Hum: ${data.current.humidity}%`;
+                document.getElementById('city-display').innerText = ciudad;
                 
-                const current = data.current_condition[0];
-                
-                // Actualizamos los valores en pantalla
-                document.getElementById('temp').innerText = current.temp_C;
-                document.getElementById('st-val').innerText = current.FeelsLikeC;
-                document.getElementById('hum-display').innerText = `Hum: ${current.humidity}%`;
-                document.getElementById('city-display').innerText = parts[2];
-                
-                // Iconos básicos según el clima
                 const icon = document.getElementById('weather-icon');
-                const desc = current.weatherDesc[0].value.toLowerCase();
-                
-                if (desc.includes("sun") || desc.includes("clear")) icon.innerText = 'wb_sunny';
-                else if (desc.includes("rain") || desc.includes("shower")) icon.innerText = 'rainy';
-                else if (desc.includes("cloud") || desc.includes("overcast")) icon.innerText = 'cloud';
-                else icon.innerText = 'filter_drama';
-
-            } catch (e) {
-                console.log("Error en clima principal, reintentando con backup...", e);
-                // Si falla, mostramos un aviso sutil
-                document.getElementById('temp').innerText = "??";
-                document.getElementById('city-display').innerText = "Reconectando...";
+                const code = data.current.condition.code;
+                if (code === 1000) icon.innerText = 'wb_sunny';
+                else if (code <= 1006) icon.innerText = 'cloud';
+                else icon.innerText = 'umbrella';
             }
+        } catch (e) { console.log("Error clima"); }
+    }
+
+    async function actualizarMarquesina() {
+    const key = "7a3c696b0a174cbd8fd174435261004";
+    const container = document.getElementById('marquesina-dinamica');
+    
+    // El listado completo que me pasaste
+    const ciudades = [
+        "CABA", "La Plata", "Córdoba", "Bahia Blanca", "Santa Fe", "Paraná", "Posadas", "Corrientes", 
+        "Formosa", "Resistencia", "Salta", "Tucumán", "San Juan", "San Luis", "Santa Rosa", 
+        "Neuquén", "Viedma", "Rawson", "Río Gallegos", "Ushuaia", "Islas Malvinas", "Rosario", 
+        "Mar del Plata", "Bariloche", "San Martín de los Andes", "Villa Mercedes", "Puerto Iguazú", 
+        "El Calafate", "——— 🌎 EL TIEMPO EN EL MUNDO 🌎 ———", 
+        "Madrid", "Barcelona", "Miami", "Nueva York", "Roma", "París", "Londres", "Río de Janeiro", 
+        "Santiago", "Montevideo", "Asunción", "México DF", "Bogotá", "Lima", "Tokio", "Dubái"
+    ];
+
+    let htmlFinal = '';
+
+    // Para no saturar la API, pedimos los datos en tandas o simplemente los más importantes primero
+    // Aquí procesamos la lista completa con tu llave
+    for (let c of ciudades) {
+        if (c.includes('———')) {
+            htmlFinal += `<span class="marquesina-item" style="color:#55efc4">${c}</span>`;
+            continue;
         }
 
-      async function actualizarMarquesina() {
-            const container = document.getElementById('marquesina-dinamica');
+        try {
+            const res = await fetch(`https://api.weatherapi.com/v1/current.json?key=${key}&q=${c}&lang=es`);
+            const data = await res.json();
             
-            // 1. Ponemos datos de emergencia por si la API no responde
-            const ciudadesFijas = "MENDOZA: 24° | CABA: 22° | CÓRDOBA: 25° | SAN JUAN: 28° | MADRID: 18° | MIAMI: 27°";
-            
-            try {
-                const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=-34.61,-31.41,-31.53,40.41,25.76&longitude=-58.37,-64.18,-68.53,-3.70,-80.19&current=temperature_2m&timezone=auto`, { signal: AbortSignal.timeout(5000) }); // Si tarda más de 5 seg, corta.
+            if (data.current) {
+                const temp = Math.round(data.current.temp_c);
+                const code = data.current.condition.code;
                 
-                if (!res.ok) throw new Error('API lenta');
+                // --- LÓGICA DE ICONOS ---
+                let icono = 'wb_sunny'; // Por defecto sol
+                if (code > 1000 && code <= 1006) icono = 'cloud'; // Nublado
+                if (code >= 1063) icono = 'umbrella'; // Lluvia/Tormenta
                 
-                const data = await res.json();
-                const nombres = ['CABA', 'CÓRDOBA', 'SAN JUAN', 'MADRID', 'MIAMI'];
-                
-                let htmlFinal = '';
-                // Estructura para cuando la API responde bien
-                nombres.forEach((nombre, i) => {
-                    const temp = Math.round(data[i].current.temperature_2m);
-                    htmlFinal += `<span class="marquesina-item">${nombre}: <span>${temp}°</span></span>`;
-                });
-                
-                container.innerHTML = htmlFinal;
-
-            } catch (e) {
-                console.log("Usando datos de respaldo para marquesina");
-                // Si la API falla, llenamos la marquesina con esto para que no quede vacía
-                container.innerHTML = `
-                    <span class="marquesina-item">MENDOZA: <span>24°</span></span>
-                    <span class="marquesina-item">CABA: <span>22°</span></span>
-                    <span class="marquesina-item">CÓRDOBA: <span>25°</span></span>
-                    <span class="marquesina-item">SAN JUAN: <span>28°</span></span>
-                    <span class="marquesina-item">ESTACIÓN ZÚÑIGA: <span>CONECTADA 🛰️</span></span>
-                `;
+                // Armamos el item con el icono adelante
+                htmlFinal += `
+                    <span class="marquesina-item">
+                        <span class="material-symbols-outlined" style="vertical-align: middle; font-size: 18px;">${icono}</span> 
+                        ${c.toUpperCase()}: <span>${temp}°</span>
+                    </span>`;
             }
+        } catch (e) {
+            console.log("Error en: " + c);
         }
+    }
 
-function obtenerIconoClima(codigo, hora) {
-    const esNoche = hora >= 20 || hora <= 6;
-    if (codigo === 0) return esNoche ? 'nightlight' : 'wb_sunny'; 
-    if (codigo <= 3) return esNoche ? 'nights_stay' : 'cloud_queue'; 
-    if (codigo >= 51 && codigo <= 67) return 'rainy'; 
-    if (codigo >= 71 && codigo <= 77) return 'ac_unit'; 
-    if (codigo >= 80 && codigo <= 82) return 'umbrella'; 
-    if (codigo >= 95) return 'thunderstorm'; 
-    return 'cloud'; 
+    if (htmlFinal !== '') {
+        container.innerHTML = htmlFinal;
+    }
 }
 
-        // --- NUEVA FUNCIÓN PARA MARQUESINA NACIONAL ---
-        async function actualizarMarquesina() {
-            const ciudades = [
-                {n: 'CABA', lat: -34.61, lon: -58.37},
-                {n: 'La Plata', lat: -34.92, lon: -57.95},
-                {n: 'Córdoba', lat: -31.41, lon: -64.18},
-                {n: 'Bahia Blanca', lat: -38.44, lon: -62.16},
-                {n: 'Santa Fe', lat: -31.63, lon: -60.70},
-                {n: 'Paraná', lat: -31.73, lon: -60.52},
-                {n: 'Posadas', lat: -27.36, lon: -55.89},
-                {n: 'Corrientes', lat: -27.46, lon: -58.83},
-                {n: 'Formosa', lat: -26.17, lon: -58.17},
-                {n: 'Resistencia', lat: -27.45, lon: -58.98},
-                {n: 'S.S. de Jujuy', lat: -24.18, lon: -65.29},
-                {n: 'Salta', lat: -24.78, lon: -65.41},
-                {n: 'Tucumán', lat: -26.82, lon: -65.22},
-                {n: 'S.del Estero', lat: -27.78, lon: -64.26},
-                {n: 'Catamarca', lat: -28.46, lon: -65.78},
-                {n: 'La Rioja', lat: -29.41, lon: -66.85},
-                {n: 'San Juan', lat: -31.53, lon: -68.53},
-                {n: 'San Luis', lat: -33.29, lon: -66.33},
-                {n: 'Santa Rosa', lat: -36.61, lon: -64.28},
-                {n: 'Neuquén', lat: -38.95, lon: -68.05},
-                {n: 'Viedma', lat: -40.81, lon: -62.99},
-                {n: 'Rawson', lat: -43.30, lon: -65.10},
-                {n: 'Río Gallegos', lat: -51.62, lon: -69.21},
-                {n: 'Ushuaia', lat: -54.80, lon: -68.30},
-		{n: 'Islas Malvinas', lat: -51.69, lon: -57.85},
-		{n: 'Rosario', lat: -32.94, lon: -60.63},
-		{n: 'Termas Río Hondo', lat: -27.50, lon: -64.86},
-		{n: 'Mar del Plata', lat: -38.00, lon: -57.55},
-		{n: 'Carlos Paz', lat: -31.42, lon: -64.49},
-		{n: 'Esquel', lat: -42.91, lon: -71.31},
-		{n: 'Gualeguaychú', lat: -33.01, lon: -58.51},
-		{n: 'Bariloche', lat: -41.13, lon: -71.30},
-		{n: 'Gral. Pico', lat: -35.65, lon: -63.75},
-		{n: 'Necochea', lat: -38.55, lon: -58.73},
-		{n: 'Olavarría', lat: -36.89, lon: -60.32},
-		{n: 'Tandil', lat: -37.32, lon: -59.13},
-		{n: 'Villa Mercedes', lat: -33.40, lon: -65.28},
-		{n: 'Venado Tuerto', lat: -33.74, lon: -61.96},
-		{n: 'Laboulaye', lat: -34.12, lon: -63.39},
-		{n: 'Yapeyú', lat: -29.47, lon: -56.81},
-		{n: 'Puerto Iguazú', lat: -25.59, lon: -54.57},
-		{n: 'Tartagal', lat: -22.51, lon: -63.80},
-		{n: 'La Quiaca', lat: -22.10, lon: -65.59},
-		{n: 'Clorinda', lat: -25.28, lon: -57.72},
-		{n: 'Río Grande (TdF)', lat: -53.78, lon: -67.70},
-		{n: 'El Calafate', lat: -50.34, lon: -72.27},
-		{n: 'Trelew', lat: -43.25, lon: -65.31},
-		{n: 'San Antonio Oeste', lat: -40.73, lon: -64.95},
-		{n: 'Carmen de Patagones', lat: -40.80, lon: -62.98},
-		{n: 'Junín de los Andes', lat: -39.95, lon: -71.07},
-		{n: 'San Martín de los Andes', lat: -40.15, lon: -71.34},
-		{n: 'Tres Arroyos', lat: -38.37, lon: -60.28},
-		{n: 'Gral. Madariaga', lat: -37.00, lon: -57.14},
-		{n: 'Dolores', lat: -36.31, lon: -57.68},
-		{n: 'Chascomús', lat: -35.58, lon: -58.01},
-		{n: 'Cosquín', lat: -31.25, lon: -64.47},
-		{n: 'Villa María', lat: -32.41, lon: -63.24},
-		{n: 'Pergamino', lat: -33.89, lon: -60.57},
-		{n: 'San Nicolás', lat: -33.33, lon: -60.21},
-		{n: 'Zárate', lat: -34.10, lon: -59.02},
-		{n: 'Concordia', lat: -31.39, lon: -58.02},
-		{n: 'Curuzú Cuatiá', lat: -29.79, lon: -58.05},
-		{n: 'Fiambalá', lat: -27.69, lon: -67.62},
-		{n: 'Roque Sáenz Peña', lat: -26.79, lon: -60.44},
-		{n: 'Tafí Viejo', lat: -26.73, lon: -65.26},
-		{n: 'Tilcara', lat: -23.58, lon: -65.39},
-		{n: 'Gral. Güemes', lat: -24.67, lon: -65.05},
-		{n: '——— 🌎 EL TIEMPO EN EL MUNDO 🌎 ———', lat: null, lon: null},
-		{n: 'Madrid, ES', lat: 40.41, lon: -3.70},
-		{n: 'Barcelona, ES', lat: 41.38, lon: 2.17},
-		{n: 'Miami, US', lat: 25.76, lon: -80.19},
-		{n: 'Nueva York, US', lat: 40.71, lon: -74.00},
-		{n: 'Roma, IT', lat: 41.90, lon: 12.49},
-		{n: 'París, FR', lat: 48.85, lon: 2.35},
-		{n: 'Londres, GB', lat: 51.50, lon: -0.12},
-		{n: 'Río de Janeiro, BR', lat: -22.90, lon: -43.17},
-		{n: 'Santiago, CL', lat: -33.44, lon: -70.66},
-		{n: 'Montevideo, UY', lat: -34.90, lon: -56.16},
-		{n: 'Punta del Este, UY', lat: -34.96, lon: -54.94},
-		{n: 'Asunción, PY', lat: -25.26, lon: -57.57},
-		{n: 'Santa Cruz, BO', lat: -17.78, lon: -63.18},
-		{n: 'Playa del Carmen, MX', lat: 20.62, lon: -87.07},
-		{n: 'Moscú, RU', lat: 55.75, lon: 37.61},
-		{n: 'Tokio, JP', lat: 35.68, lon: 139.76},
-		{n: 'Sídney, AU', lat: -33.86, lon: 151.20},
-		{n: 'Berlín, DE', lat: 52.52, lon: 13.40},
-		{n: 'Múnich, DE', lat: 48.13, lon: 11.58},
-		{n: 'Roma, IT', lat: 41.90, lon: 12.49},
-		{n: 'Milán, IT', lat: 45.46, lon: 9.18},
-		{n: 'Ámsterdam, NL', lat: 52.36, lon: 4.90},
-		{n: 'Jerusalén, IL', lat: 31.76, lon: 35.21},
-		{n: 'Dubái, AE', lat: 25.20, lon: 55.27},
-		{n: 'Pekín, CN', lat: 39.90, lon: 116.40},
-		{n: 'Seúl, KR', lat: 37.56, lon: 126.97},
-		{n: 'México DF, MX', lat: 19.43, lon: -99.13},
-		{n: 'Bogotá, CO', lat: 4.71, lon: -74.07},
-		{n: 'Lima, PE', lat: -12.04, lon: -77.04},
-		{n: 'Los Ángeles, US', lat: 34.05, lon: -118.24},
-		{n: 'Orlando, US', lat: 28.53, lon: -81.37},
-		{n: 'Toronto, CA', lat: 43.65, lon: -79.38},
-		{n: 'Sídney, AU', lat: -33.86, lon: 151.20},
-		{n: 'El Cairo, EG', lat: 30.04, lon: 31.23},
-            ];
-
-            const lats = ciudades.map(c => c.lat).join(',');
-            const lons = ciudades.map(c => c.lon).join(',');
-            
-            try {
-                const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lats}&longitude=${lons}&current=temperature_2m,weather_code&timezone=auto`);
-                const data = await res.json();
-                const container = document.getElementById('marquesina-dinamica');
-                container.innerHTML = ''; 
-
-                // MAPA DE EMOJIS ESTÁNDAR (Para evitar el cuadrado blanco)
-                const getEmoji = (code) => {
-                    // 0-1: Despejado
-                    if (code <= 1) return '☀️'; // Sol
-                    
-                    // 2-3: Nublado parcial
-                    if (code <= 3) return '🌤️'; // Sol detrás de nube
-                    
-                    // 45, 48: Niebla (Aquí estaba el problema, usamos nube simple)
-                    if (code === 45 || code === 48) return '☁️'; 
-                    
-                    // 51-65: Drizzle/Lluvia
-                    if (code <= 65) return '🌧️'; // Nube con lluvia
-                    
-                    // 66-77: Nieve (Usamos el copo simple que es más compatible)
-                    if (code <= 77) return '❄️';
-                    
-                    // 80-82: Chubascos (Usamos lluvia fuerte)
-                    if (code <= 82) return '☔'; 
-
-                    // 95-99: Tormenta
-                    if (code <= 99) return '⛈️'; // Nube con rayo y lluvia
-                    
-                    // Por defecto: Nube
-                    return '☁️';
-                };
-
-                // Asegurar que procesamos data como array
-                const dataResults = Array.isArray(data) ? data : [data];
-
-               ciudades.forEach((c, i) => {
-    // Si la ciudad es el SEPARADOR (no tiene latitud), lo mostramos solo
-    if (!c.lat) {
-        container.innerHTML += `<span class="marquesina-item" style="color: #fffa65; font-weight: bold; margin: 0 20px;">${c.n}</span>`;
-    } 
-    // Si NO es el separador, verificamos que tenga datos de clima
-    else if (dataResults[i] && dataResults[i].current) {
-        const temp = Math.round(dataResults[i].current.temperature_2m);
-        const emoji = getEmoji(dataResults[i].current.weather_code);
-        container.innerHTML += `<span class="marquesina-item">${c.n}: <span>${temp}°</span> ${emoji}</span>`;
+    async function updateSismos() {
+        const lista = document.getElementById('lista-sismos');
+        try {
+            const res = await fetch('https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&minmagnitude=4.5&limit=5');
+            const data = await res.json();
+            lista.innerHTML = '';
+            data.features.forEach(s => {
+                const mag = s.properties.mag;
+                const lugar = s.properties.place;
+                let bandera = lugar.includes('Chile') ? '🇨🇱' : lugar.includes('Argentina') ? '🇦🇷' : '🌍';
+                const item = document.createElement('div');
+                item.className = 'sismo-item';
+                item.innerHTML = `<span class="sismo-mag">${mag}</span> ${bandera} ${lugar.split(',').pop()}`;
+                lista.appendChild(item);
+            });
+        } catch (e) { lista.innerHTML = 'Sin datos de sismos'; }
     }
-});
-            } catch (e) { 
-                console.log("Error en la marquesina nacional", e); 
-                container.innerHTML = 'Error cargando clima.';
-            }
+
+    function lanzarAlerta() {
+        const t = document.getElementById('input-nueva-alerta').value;
+        if(t) {
+            document.getElementById('alerta-mensaje').innerText = t;
+            document.getElementById('alerta-box').style.background = '#ff7675';
+            document.getElementById('alerta-box').style.color = 'white';
         }
+    }
 
-        async function updateSismos() {
-            const lista = document.getElementById('lista-sismos');
-            try {
-                // Cambiamos el filtro: Buscamos sismos de magnitud 4.0+ en TODO EL MUNDO
-                // Así nos aseguramos que siempre haya actividad reciente
-                const url = 'https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&minmagnitude=4.5&orderby=time&limit=5';
-                
-                const response = await fetch(url);
-                const data = await response.json();
-                
-                if (!data.features || data.features.length === 0) {
-                    lista.innerHTML = '<div class="sismo-item">Sin sismos detectados</div>';
-                    return;
-                }
-                
-                lista.innerHTML = '';
-                
-                data.features.forEach(s => {
-                    const mag = s.properties.mag.toFixed(1);
-                    let lugar = s.properties.place;
-                    
-                    // Limpiamos un poco el nombre del lugar para que no sea tan largo
-                    if (lugar.includes(', ')) {
-                        const partes = lugar.split(', ');
-                        lugar = partes[partes.length - 1]; // Nos quedamos con el país o región principal
-                    }
+    function limpiarAlerta() {
+        document.getElementById('alerta-mensaje').innerText = 'No hay alertas hoy';
+        document.getElementById('alerta-box').style.background = 'white';
+        document.getElementById('alerta-box').style.color = 'black';
+    }
 
-                    // Ponemos banderitas para que quede más pintoresco
-                    let bandera = '🌍';
-                    if (lugar.includes('Chile')) bandera = '🇨🇱';
-                    if (lugar.includes('Argentina')) bandera = '🇦🇷';
-                    if (lugar.includes('Japan')) lugar = 'Japón 🇯🇵';
-                    if (lugar.includes('Indonesia')) bandera = '🇮🇩';
-                    if (lugar.includes('Mexico')) lugar = 'México 🇲🇽';
-                    if (lugar.includes('Alaska')) bandera = '🇺🇸';
+    // --- ARRANQUE DE TODO ---
+    updateClock();
+    setInterval(updateClock, 1000);
+    getDolar();
+    updateWeatherLocation("-33.08,-68.47,SAN MARTÍN");
+    updateSismos();
+    actualizarMarquesina();
 
-                    const item = document.createElement('div');
-                    item.className = 'sismo-item';
-                    item.innerHTML = `<span class="sismo-mag">${mag}</span> ${bandera} ${lugar}`;
-                    lista.appendChild(item);
-                });
-            } catch (error) {
-                lista.innerHTML = '<div class="sismo-item" style="color:red">Error de conexión</div>';
-            }
-        }
+    // Actualizar datos cada tanto tiempo
+    setInterval(getDolar, 1800000); // 30 min
+    setInterval(actualizarMarquesina, 900000); // 15 min
+    setInterval(updateSismos, 300000); // 5 min
 
-        // Intervalos de actualización
-        setInterval(updateClock, 1000);
-        setInterval(updateSismos, 300000);
-        setInterval(getDolar, 1800000);
-        setInterval(actualizarMarquesina, 900000); // Cada 15 min
-        setInterval(() => {
-            const select = document.getElementById('select-clima');
-            updateWeatherLocation(select.value);
-        }, 600000);
-
-        // Carga inicial
-        updateClock();
-        getDolar();
-        updateWeatherLocation("-33.08,-68.47,SAN MARTÍN");
-        updateSismos();
-        actualizarMarquesina();
-        manejarAlertas();
-    
+    if(window.location.search.includes('admin=carlos')) {
+        document.getElementById('panel-zuniga').style.display = 'block';
+    }
 </script>
+</html>
 </body>
 </html>

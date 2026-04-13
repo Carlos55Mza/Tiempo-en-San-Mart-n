@@ -241,8 +241,8 @@
     
     <div style="font-weight: bold; color: #333; font-size: 1em; margin-bottom: 5px;">🏔️ PASO CRISTO REDENTOR</div>
 
-    <div style="background: #27ae60; color: white; padding: 6px; border-radius: 5px; font-size: 1.1em; font-weight: bold; margin-bottom: 8px;">
-        ✅ ABIERTO
+    <div style="background: #e74c3c; color: white; padding: 6px; border-radius: 5px; font-size: 1.1em; font-weight: bold; margin-bottom: 8px;">
+        ✅ CERRADO
     </div>
 
     <div style="text-align: left; font-size: 0.7em; color: #444; line-height: 1.1; margin: 0 5px;">
@@ -253,28 +253,54 @@
     </div>
 
     <div style="margin-top: 6px; font-size: 0.75em; color: #777; border-top: 1px solid #eee; padding-top: 4px;">
-        <i>Actualizado: 19:30 hs</i>
+        <i>Actualizado: 21:00 hs</i>
   
 	</div>
-</div>              
-
-<div style="background: #ffffff; border: 2px solid #333333; border-radius: 5px; padding: 10px; margin: 10px; width: 280px; text-align: center; font-family: sans-serif; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); box-sizing: border-box; display: inline-block; vertical-align: top;">
+<div id="cuadro-sismos" style="background: #ffffff; border: 2px solid #333333; border-radius: 5px; padding: 10px; margin: 10px; width: 280px; text-align: center; font-family: sans-serif; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); box-sizing: border-box; display: inline-block; vertical-align: top;">
+    <div style="font-weight: bold; color: #333; font-size: 1em; margin-bottom: 8px;">📡 SISMOS EN VIVO</div>
     
-    <div style="font-weight: bold; color: #333; font-size: 1em; margin-bottom: 8px;">📡 SISMOS RECIENTES</div>
+    <div id="sismo-principal">Cargando datos...</div>
 
-    <div style="background: #e74c3c; color: white; padding: 5px; border-radius: 5px; font-size: 0.9em; font-weight: bold; margin-bottom: 8px;">
-        ⚠️ 3.8 MENDOZA (Cerca de San Martín)
+    <div id="lista-sismos" style="text-align: left; font-size: 0.75em; color: #444; line-height: 1.4; padding-left: 5px; border-top: 1px solid #eee; margin-top: 8px; padding-top: 5px;">
     </div>
 
-    <div style="text-align: left; font-size: 0.75em; color: #444; line-height: 1.4; padding-left: 5px;">
-        🌐 <b>5.2 Chile:</b> Coquimbo<br>
-        🌐 <b>4.5 Japón:</b> Honshu<br>
-        🌐 <b>4.1 Indonesia:</b> Mar de Banda
+    <div style="margin-top: 6px; font-size: 0.65em; color: #999; border-top: 1px solid #eee; padding-top: 4px;">
+        <i>Fuente: USGS (Actualizado en vivo)</i>
     </div>
+</div>
 
-    <div style="margin-top: 6px; font-size: 0.7em; color: #999; border-top: 1px solid #eee; padding-top: 4px;">
-        <i>Fuente: INPRES / USGS</i>
-    </div>
+<script>
+    async function actualizarSismos() {
+        try {
+            const respuesta = await fetch('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_hour.geojson');
+            const datos = await respuesta.json();
+            const sismos = datos.features;
+
+            if (sismos.length > 0) {
+                // Sismo más reciente (Principal)
+                const principal = sismos[0].properties;
+                document.getElementById('sismo-principal').innerHTML = `
+                    <div style="background: #e74c3c; color: white; padding: 5px; border-radius: 5px; font-size: 0.9em; font-weight: bold;">
+                        ⚠️ Mag: ${principal.mag} - ${principal.place}
+                    </div>`;
+
+                // Los siguientes 3 sismos
+                let listaHTML = '';
+                for (let i = 1; i < Math.min(sismos.length, 4); i++) {
+                    let s = sismos[i].properties;
+                    listaHTML += `🌐 <b>${s.mag}</b> ${s.place}<br>`;
+                }
+                document.getElementById('lista-sismos').innerHTML = listaHTML;
+            } else {
+                document.getElementById('sismo-principal').innerHTML = "Sin sismos en la última hora";
+            }
+        } catch (error) {
+            console.error("Error al cargar sismos", error);
+        }
+    }
+    actualizarSismos();
+    setInterval(actualizarSismos, 300000); // Se actualiza cada 5 minutos solo
+</script>
 </div>
 <div id="carrusel-publicidad" style="display: inline-block; vertical-align: top; width: 280px; height: 130px; margin: 10px; overflow: hidden; border-radius: 5px; border: 2px solid #f1c40f; position: relative; font-family: sans-serif; background: #fff; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); box-sizing: border-box;">
     
@@ -362,7 +388,7 @@
     <span class="service-label">TN en Vivo</span>
 </a>
 
-<a href="https://youtu.be/jFg6tlnLJWY" target="_blank" class="service-item">
+<a href="https://youtu.be/V6RlyFXQu6I" target="_blank" class="service-item">
     <span class="material-symbols-outlined" style="color:#c084fc">tv</span>
     <span class="service-label">Canal 9</span>
 </a>

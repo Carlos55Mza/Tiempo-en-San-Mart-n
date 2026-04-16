@@ -72,7 +72,7 @@
     .top-grid { 
         display: grid; 
         grid-template-columns: 350px 1fr; /* El primer valor es el ancho fijo del reloj/clima */
-        gap: 20px; 
+        gap: 3px; 
         margin-bottom: 20px; 
         align-items: start; 
     }
@@ -88,7 +88,7 @@
         backdrop-filter: blur(10px);
         border-radius: 20px; 
         border: 2px solid white;
-        padding: 15px; 
+        padding: 5px; 
         box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         position: relative;
         max-width: 320px; /* Aquí está el secreto para achicarlo */
@@ -155,7 +155,7 @@ vertical-align: middle;
         border-left: 4px solid #e74c3c; border: 1px solid rgba(255,255,255,0.5);
     }
 
-    @media (max-width: 768px) { 
+    @media (max-width: 600px) { 
         .top-grid { grid-template-columns: 1fr; } 
         .weather-main-card { max-width: 100%; width: 100%; box-sizing: border-box; }
         #clock { font-size: 3rem; }

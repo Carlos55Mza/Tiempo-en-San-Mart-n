@@ -731,26 +731,70 @@ const ciudades = [
         document.getElementById('panel-zuniga').style.display = 'block';
     }
 
-</script> <script>
-    async function cargarPrecios() {
-        try {
-            // Buscamos Dólar
-            const resD = await fetch('https://dolarapi.com/v1/dolares/blue');
-            const dataD = await resD.json();
-            document.getElementById('dolar-val').innerText = `$${Math.round(dataD.venta)}`;
+</script> 
 
-            // Buscamos Euro
-            const resE = await fetch('https://dolarapi.com/v1/cotizaciones/eur');
-            const dataE = await resE.json();
-            document.getElementById('euro-val').innerText = `$${Math.round(dataE.venta)}`;
-        } catch (e) {
-            console.log("Error en la carga de precios");
+<script>
+// USAMOS UN "TRY-CATCH" PARA CADA COSA, ASÍ NO SE MOLESTAN
+async function cargarFinanzas() {
+    // 1. EL DÓLAR
+    try {
+        const resD = await fetch('https://dolarapi.com/v1/dolares/blue');
+        const dataD = await resD.json();
+        const elD = document.getElementById('dolar-val');
+        if(elD) elD.innerText = `$${Math.round(dataD.venta)}`;
+    } catch (e) { 
+        console.log("Error en Dólar"); 
+    }
+
+    // 2. EL EURO
+    try {
+        const resE = await fetch('https://dolarapi.com/v1/cotizaciones/eur');
+        const dataE = await resE.json();
+        const elE = document.getElementById('euro-val');
+        if(elE) elE.innerText = `$${Math.round(dataE.venta)}`;
+    } catch (e) { 
+        console.log("Error en Euro"); 
+    }
+}
+
+// LANZAMOS LA FUNCIÓN DESPUÉS DE 1 SEGUNDO 
+// PARA QUE LA HORA Y LA TEMPERATURA CARGUEN PRIMERO
+setTimeout(cargarFinanzas, 1000);
+</script>
+
+</script>
+
+<div id="alerta-zonda" style="display:none; background:red; color:white; text-align:center; padding:15px; font-weight:bold; font-size:1.4rem; animation: parpadeoZonda 1s infinite; position: fixed; top: 0; left: 0; width: 100%; z-index: 9999; border-bottom: 3px solid black;">
+    ⚠️ ¡ATENCIÓN: ALERTA METEOROLÓGICA EN SAN MARTÍN! ⚠️
+</div>
+
+<style>
+@keyframes parpadeoZonda {
+    0% { background: red; }
+    50% { background: darkred; }
+    100% { background: red; }
+}
+</style>
+
+<script>
+    // ESTA FUNCIÓN SE ENCARGA SOLO DE LA ALERTA
+    function controlarAlerta() {
+        // --- CONFIGURACIÓN MANUAL ---
+        // Cambiá "false" por "true" para prender el cartel rojo
+        let hayPeligro = false; 
+
+        const cartel = document.getElementById('alerta-zonda');
+        if (hayPeligro === true) {
+            cartel.style.display = 'block';
+        } else {
+            cartel.style.display = 'none';
         }
     }
 
-    // Esperamos 2 segundos para no molestar al resto de la página
-    setTimeout(cargarPrecios, 2000);
-</script></script>
+    // La ejecutamos un poquito después que el resto
+    setTimeout(controlarAlerta, 2000);
+</script>
+
 </body>
 <div style="width: 100%; background: linear-gradient(90deg, #d32f2f, #b71c1c); color: white; margin: 25px 0; box-shadow: 0 4px 15px rgba(0,0,0,0.6); border-top: 2px solid #ff5252; border-bottom: 2px solid #ff5252; overflow: hidden;">
     <marquee behavior="scroll" direction="left" scrollamount="8" style="font-family: 'Arial Black', Gadget, sans-serif; font-size: 18px; line-height: 50px; text-shadow: 2px 2px 4px rgba(0,0,0,0.7);">

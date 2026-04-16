@@ -221,15 +221,15 @@ vertical-align: middle;
 
     <div style="display: flex; flex-direction: column; gap: 6px;">
         
-        <div class="dolar-mini-box" style="width: fit-content; margin: 0;">
-            <span style="font-size: 1.1rem;">💵</span>
-            <span style="margin-left: 5px;">BLUE: $1410</span>
-        </div>
+        <div class="dolar-mini-box">
+    <span>💵</span>
+    <span style="margin-left: 5px;">BLUE: <span id="dolar-val">...</span></span>
+</div>
 
-        <div class="euro-mini-box" style="width: fit-content; margin: 0;">
-            <span style="font-size: 0.9rem; font-weight: 900;">EU</span>
-            <span style="margin-left: 5px;">EURO: $1605.66</span>
-        </div>
+<div class="euro-mini-box">
+    <span style="font-size: 0.8rem; font-weight: 900;">EU</span>
+    <span style="margin-left: 5px;">EURO: <span id="euro-val">...</span></span>
+</div>
 
         <a href="https://www.aa2000.com.ar/mendoza" target="_blank" class="vuelos-mini-box" style="width: fit-content; margin: 0; text-decoration: none;">
             <span>✈️</span>
@@ -728,19 +728,27 @@ const ciudades = [
     if(window.location.search.includes('admin=carlos')) {
         document.getElementById('panel-zuniga').style.display = 'block';
     }
-</script>
-</html>
 
+</script> <script>
+    async function cargarPrecios() {
+        try {
+            // Buscamos Dólar
+            const resD = await fetch('https://dolarapi.com/v1/dolares/blue');
+            const dataD = await resD.json();
+            document.getElementById('dolar-val').innerText = `$${Math.round(dataD.venta)}`;
 
-<script>
-    // Buscamos el precio del Euro
-    fetch('https://dolarapi.com/v1/cotizaciones/eur')
-    .then(res => res.json())
-    .then(data => {
-        // El .toFixed(2) es el que corta los decimales a solo dos
-        document.getElementById('euro-val').innerText = '$' + parseFloat(data.venta).toFixed(2);
-    });
-</script>
+            // Buscamos Euro
+            const resE = await fetch('https://dolarapi.com/v1/cotizaciones/eur');
+            const dataE = await resE.json();
+            document.getElementById('euro-val').innerText = `$${Math.round(dataE.venta)}`;
+        } catch (e) {
+            console.log("Error en la carga de precios");
+        }
+    }
+
+    // Esperamos 2 segundos para no molestar al resto de la página
+    setTimeout(cargarPrecios, 2000);
+</script></script>
 </body>
 <div style="width: 100%; background: linear-gradient(90deg, #d32f2f, #b71c1c); color: white; margin: 25px 0; box-shadow: 0 4px 15px rgba(0,0,0,0.6); border-top: 2px solid #ff5252; border-bottom: 2px solid #ff5252; overflow: hidden;">
     <marquee behavior="scroll" direction="left" scrollamount="8" style="font-family: 'Arial Black', Gadget, sans-serif; font-size: 18px; line-height: 50px; text-shadow: 2px 2px 4px rgba(0,0,0,0.7);">

@@ -168,9 +168,21 @@
     cursor: pointer;
 }
  
-    .weather-info { display: flex; align-items: center; justify-content: space-around; margin-top: 0px; }
-    .temp-huge { font-size: 3.0rem; font-weight: 900; color: var(--text-dark); line-height: 1; }
-    .st-box { font-size: 0.9rem; color: #d35400; font-weight: bold; }
+    .weather-info { 
+    display: flex; 
+    flex-direction: column; /* Ponemos uno abajo del otro para que no se pisen de costado */
+    align-items: center; 
+    justify-content: center; 
+    margin-top: 5px; 
+}
+
+.temp-huge { 
+    font-size: 3.5rem; 
+    font-weight: 900; 
+    color: var(--text-dark); 
+    line-height: 0.9; /* Bien apretadito pero sin pisar el texto */
+    margin: 5px 0;
+}
 
     /* SECCIÓN DE SERVICIOS */
     .main-content { display: grid; grid-template-columns: 1fr; gap: 0px; }

@@ -69,6 +69,34 @@
     font-style: italic;
 }
 
+
+/* ARREGLO PARA QUE NO SE MONTEN LOS DEPARTAMENTOS */
+@media (max-width: 480px) {
+    .city-selector {
+        position: relative !important;
+        display: block !important;
+        width: 100% !important;
+        text-align: center !important;
+        margin-bottom: 15px !important; /* Espacio para que no pise la temperatura */
+        top: 0 !important;
+        right: 0 !important;
+    }
+
+    .weather-info {
+        display: flex !important;
+        flex-direction: column !important; /* Uno abajo del otro */
+        align-items: center !important;
+        margin-top: 10px !important;
+    }
+
+    .temp-huge {
+        display: block !important;
+        position: relative !important;
+        margin: 0 auto !important;
+        line-height: 1 !important;
+    }
+}
+
 /* AJUSTE QUIRÚRGICO DE POSICIÓN - ESTACIÓN ZÚÑIGA */
 @media (max-width: 480px) {
     /* Forzamos a que todo sea una sola columna */

@@ -23,7 +23,6 @@
         --news: #d35400;
         --cafecito: #e67e22;
     }
-    
 
 /* DISEÑO DEL CUADRO PASO A CHILE */
 .card-paso {
@@ -70,7 +69,7 @@
     font-style: italic;
 }
 
-
+    
 /* EL MAZO: Esto obliga a los iconos a juntarse */
 .container, .grid, [class*="container"], [class*="grid"] {
     gap: 10px !important; /* Achica el espacio entre cajas */
@@ -104,18 +103,18 @@
         border-bottom: 3px solid #0984e3; 
     }
     .marquesina-content { 
-    display: inline-block; /* Cambiamos block por inline-block */
-    white-space: nowrap; 
-    padding-left: 50%; /* Bajamos el espacio inicial para que aparezca antes */
-    animation: scroll-clima 90s linear infinite; 
-}
+        display: inline-block; 
+        white-space: nowrap; 
+        padding-left: 100%; 
+        animation: scroll-clima 180s linear infinite; 
+    }
     .marquesina-item { margin-right: 80px; text-transform: uppercase; }
     .marquesina-item span { color: #fffa65; }
 
     @keyframes scroll-clima { 
-    0% { transform: translateX(0); } 
-    100% { transform: translateX(-100%); } 
-}
+        0% { transform: translateX(0); } 
+        100% { transform: translateX(-100%); } 
+    }
 
     .overlay { 
         position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
@@ -127,14 +126,14 @@
 
     /* GRID SUPERIOR: Ajustada para que el clima no se robe toda la pantalla */
     .top-grid { 
-        display: block; 
+        display: grid; 
         grid-template-columns: 350px 1fr; /* El primer valor es el ancho fijo del reloj/clima */
         gap: 3px; 
         margin-bottom: 20px; 
         align-items: start; 
     }
     
-    .clock-section { text-align: left; line-height: 1.1; color: #2d3436; margin-bottom: 0px; }
+    .clock-section { text-align: left; line-height: 1.1; color: #2d3436; margin-bottom: 15px; }
     #clock { font-size: 3.5rem; font-weight: 900; letter-spacing: -2px; }
     #ampm { font-size: 1.2rem; font-weight: bold; color: var(--money); }
     
@@ -151,42 +150,19 @@
         max-width: 280px; /* Aquí está el secreto para achicarlo */
     }
 
-   .city-selector { 
-    position: relative; /* Ya no flota, ahora respeta el espacio */
-    top: 0; 
-    right: 0; 
-    text-align: center; /* Lo centramos para que quede prolijo */
-    margin-bottom: 5px; 
-}
+    .city-selector { position: absolute; top: 12px; right: 12px; }
+    .city-selector select { 
+        background: rgba(255,255,255,0.9); border: 1px solid #ccc; 
+        border-radius: 6px; font-size: 0.7rem; padding: 2px;
+    }
 
-.city-selector select { 
-    background: rgba(255,255,255,0.9); 
-    border: 1px solid #ccc; 
-    border-radius: 6px; 
-    font-size: 0.8rem; /* Un poquito más grande para que sea fácil de tocar */
-    padding: 4px;
-    cursor: pointer;
-}
- 
-    .weather-info { 
-    display: flex; 
-    flex-direction: column; /* Ponemos uno abajo del otro para que no se pisen de costado */
-    align-items: center; 
-    justify-content: center; 
-    margin-top: 5px; 
-}
-
-.temp-huge { 
-    font-size: 3.5rem; 
-    font-weight: 900; 
-    color: var(--text-dark); 
-    line-height: 0.9; /* Bien apretadito pero sin pisar el texto */
-    margin: 5px 0;
-}
+    .weather-info { display: flex; align-items: center; justify-content: space-around; margin-top: 15px; }
+    .temp-huge { font-size: 3.5rem; font-weight: 900; color: var(--text-dark); line-height: 1; }
+    .st-box { font-size: 0.9rem; color: #d35400; font-weight: bold; }
 
     /* SECCIÓN DE SERVICIOS */
-    .main-content { display: grid; grid-template-columns: 1fr; gap: 0px; }
-    .section-title { font-size: 0.75rem; font-weight: 900; margin: 0px 0 5px; text-transform: uppercase; border-bottom: 3px solid var(--money); display: inline-block; color: #2d3436; }
+    .main-content { display: grid; grid-template-columns: 1fr; gap: 10px; }
+    .section-title { font-size: 0.75rem; font-weight: 900; margin: 10px 0 5px; text-transform: uppercase; border-bottom: 3px solid var(--money); display: inline-block; color: #2d3436; }
     
     .service-item {
         display: flex; align-items: center; text-decoration: none; color: var(--text-dark); 
@@ -240,35 +216,12 @@ vertical-align: middle;
         .weather-main-card { max-width: 100%; width: 100%; box-sizing: border-box; }
         #clock { font-size: 3rem; }
     }
-
-/* CIRUGÍA DE ESPACIOS PARA EL BÚNKER */
-
-.top-grid { 
-    display: flex !important; 
-    flex-direction: column !important; /* Los pone uno abajo del otro */
-    gap: 0px !important;              /* ELIMINA el espacio entre cuadros */
-}
-
-.weather-main-card {
-    margin-top: 0 !important;
-    margin-bottom: 5px !important;    /* Solo un poquito de aire abajo */
-}
-
-.clock-section {
-    margin-bottom: 0 !important;
-    padding-bottom: 0 !important;
-}
-
-#clock {
-    line-height: 0.9 !important;      /* Pega los números del reloj */
-}
-
 </style>
 </head>
 <body>
     <div class="marquesina-clima">
         <div id="marquesina-dinamica" class="marquesina-content">
-            <span class="marquesina-item">Conexión Satelital Estación Zúñiga...</span>
+            <span class="marquesina-item">Sintonizando Estación Zúñiga...</span>
         </div>
     </div>
 
@@ -324,8 +277,6 @@ vertical-align: middle;
         JUEVES, 16 DE ABRIL
     </div>
 
-</div> 
-
 <div class="card-paso">
     <h3>PASO CRISTO REDENTOR</h3>
     <div id="estado-paso-box">
@@ -334,6 +285,7 @@ vertical-align: middle;
     </div>
     <p class="paso-update">Sincronizado con Gendarmería</p>
 </div>
+
 
     <div style="display: flex; flex-direction: column; gap: 6px;">
         
@@ -439,8 +391,8 @@ vertical-align: middle;
 	<a href="https://youtu.be/yQJ0e2tnySk" target="_blank">Canal 10 Cba. (En Vivo)</a>
         <a href="https://cordoba.mitelefe.com/telefe-cordoba-en-vivo/" target="_blank">Telefe Cba (En Vivo)</a>
 	<a href="https://youtu.be/cb12KmMMDJA" target="_blank">TN (En Vivo)</a>
-        <a href="https://youtu.be/F0jLucQgsig" target="_blank">Canal 26 (En Vivo)</a>
-	<a href="https://youtu.be/K7tyG4hHvCI" target="_blank">Meganoticias (En Vivo)</a>
+        <a href="https://youtu.be/tP9OwopY8Ec" target="_blank">Canal 26 (En Vivo)</a>
+	<a href="https://youtu.be/31nQarZ_Exo" target="_blank">Meganoticias (En Vivo)</a>
         <a href="https://youtu.be/V6RlyFXQu6I" target="_blank">Canal 9 (En Vivo)</a>
 	<a href="https://youtu.be/SF06Qy1Ct6Y" target="_blank">C5N (En Vivo)</a>
         <a href="https://youtu.be/ArKbAx1K-2U" target="_blank">A24 (En Vivo)</a>
@@ -520,7 +472,6 @@ vertical-align: middle;
 </script></script>
 <div style="background: #ffffff; border: 2px solid #333333; border-radius: 5px; padding: 10px; margin: 10px; width: 280px; text-align: center; font-family: sans-serif; box-shadow: 2px 2px 5px rgba(0,0,0,0.1);">
     
-   
 </div>
 </div>
 <div id="cuadro-sismos" style="background: #ffffff; border: 2px solid #333333; border-radius: 5px; padding: 10px; margin: 10px; width: 280px; text-align: center; font-family: sans-serif; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); box-sizing: border-box; display: inline-block; vertical-align: top;">
@@ -1003,7 +954,7 @@ actualizarEstadoPaso();
 </body>
 <div style="width: 100%; background: linear-gradient(90deg, #d32f2f, #b71c1c); color: white; margin: 25px 0; box-shadow: 0 4px 15px rgba(0,0,0,0.6); border-top: 2px solid #ff5252; border-bottom: 2px solid #ff5252; overflow: hidden;">
     <marquee behavior="scroll" direction="left" scrollamount="8" style="font-family: 'Arial Black', Gadget, sans-serif; font-size: 18px; line-height: 50px; text-shadow: 2px 2px 4px rgba(0,0,0,0.7);">
-        ⚠️ <span style="color: #ffeb3b;">CESE DEL ALERTA METEOROLÓGICA:</span> No hay alertas vigentes en el pais en el dia de la fecha. Viernes 17 de abril de 2026. <span style="color: #ffeb3b;"</span>  ESTACIÓN ZÚÑIGA ⚠️
+        ⚠️ <span style="color: #ffeb3b;">CESE DEL ALERTA METEOROLÓGICA:</span> No hay alertas vigentes en el pais en el dia de la fecha. Jueves 16 de abril de 2026. <span style="color: #ffeb3b;"</span>  ESTACIÓN ZÚÑIGA ⚠️
     </marquee>
 </div></div></div>
 <footer style="width: 100%; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(5px); color: white; text-align: center; padding: 15px 0; margin-top: 50px; border-top: 1px solid rgba(255,255,255,0.2);">

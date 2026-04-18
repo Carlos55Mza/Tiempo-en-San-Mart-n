@@ -270,17 +270,29 @@ vertical-align: middle;
     color: white;
 }
 
-    /* SISMO CONTAINER */
+   /* AJUSTE DEL CUADRO DE SISMOS */
+.sismo-container {
+    background: rgba(255, 255, 255, 0.4); 
+    backdrop-filter: blur(10px);
+    border-radius: 12px; 
+    padding: 10px; 
+    margin-top: 15px;
+    border-left: 4px solid #e74c3c; 
+    border: 1px solid rgba(255,255,255,0.5);
+    width: 100%; /* Toma el ancho de lo que lo rodea */
+    box-sizing: border-box;
+    display: block;
+    clear: both; /* Evita que se monte sobre cosas flotantes */
+}
+
+/* En el celular, que no se escape */
+@media (max-width: 480px) {
     .sismo-container {
-        background: rgba(255, 255, 255, 0.4); border-radius: 12px; padding: 10px; margin-top: 15px;
-        border-left: 4px solid #e74c3c; border: 1px solid rgba(255,255,255,0.5);
+        width: 95% !important;
+        margin: 15px auto !important;
+        font-size: 0.85rem;
     }
 
-    @media (max-width: 8px) { 
-        .top-grid { grid-template-columns: 1fr; } 
-        .weather-main-card { max-width: 100%; width: 100%; box-sizing: border-box; }
-        #clock { font-size: 3rem; }
-    }
 </style>
 </head>
 <body>
@@ -299,7 +311,8 @@ vertical-align: middle;
                 <div id="date" style="display: none;">--</div>
                 
 </div>
-            
+ 
+           
             <div class="weather-main-card">
                 <div class="city-selector">
                     <select id="select-clima" onchange="updateWeatherLocation(this.value)">
@@ -517,8 +530,15 @@ vertical-align: middle;
         <a href="https://www.ruta0.com/" target="_blank">RUTA 0</a>
 	
     </div>
+<button class="boton-desplegable">MAS 🚀 <span>▼</span></button>
+    <div class="contenido-menu">
+        <a href="...">...</a>
+    </div>
 
-</div>
+    <div class="sismo-container">
+        <h3 style="font-size: 0.8rem; margin: 0 0 5px 0;">ÚLTIMOS SISMOS ⚠️</h3>
+        <div id="sismos-content">Cargando datos...</div>
+    </div>
 
 <script>
     var acc = document.getElementsByClassName("boton-desplegable");
@@ -535,21 +555,54 @@ vertical-align: middle;
             }
         });
     }
+// MOTOR DE SISMOS - ESTACIÓN ZÚÑIGA
+async function cargarSismos() {
+    const contenedor = document.getElementById('sismos-content');
+    try {
+        // Consultamos a la API de sismos (USGS que cubre todo el mundo, incluida nuestra zona)
+        const respuesta = await fetch('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson');
+        const datos = await respuesta.json();
+        
+        // Buscamos los sismos en un radio cercano a Mendoza/San Juan
+        // Filtramos por latitud y longitud aproximada de nuestra región
+        const sismosLocales = datos.features.filter(sismo => {
+            const coords = sismo.geometry.coordinates;
+            return coords[1] > -36 && coords[1] < -28 && coords[0] > -71 && coords[0] < -67;
+        }).slice(0, 3); // Nos quedamos con los 3 más recientes
+
+        if (sismosLocales.length > 0) {
+            let htmlSismos = "";
+            sismosLocales.forEach(s => {
+                const mag = s.properties.mag.toFixed(1);
+                const lugar = s.properties.place;
+                const hora = new Date(s.properties.time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                
+                // Color según la magnitud
+                const colorMag = mag >= 4 ? '#e74c3c' : '#2d3436';
+                
+                htmlSismos += `
+                    <div style="border-bottom: 1px solid rgba(0,0,0,0.1); padding: 5px 0; font-size: 0.75rem; text-align: left;">
+                        <b style="color: ${colorMag};">[${mag} M]</b> ${hora} - ${lugar}
+                    </div>`;
+            });
+            contenedor.innerHTML = htmlSismos;
+        } else {
+            contenedor.innerHTML = "Sin actividad reciente en la zona.";
+        }
+    } catch (error) {
+        contenedor.innerHTML = "Dato no disponible momentáneamente.";
+        console.error("Error sismos:", error);
+    }
+}
+
+// Ejecutar al cargar la página
+cargarSismos();
+// Actualizar cada 15 minutos
+setInterval(cargarSismos, 900000);
+
 </script></script>
 
 </div>
-</div>
-<div id="cuadro-sismos" style="background: #ffffff; border: 2px solid #333333; border-radius: 5px; padding: 10px; margin: 10px; width: 280px; text-align: center; font-family: sans-serif; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); box-sizing: border-box; display: inline-block; vertical-align: top;">
-    <div style="font-weight: bold; color: #333; font-size: 1em; margin-bottom: 8px;">📡 SISMOS EN VIVO</div>
-    
-    <div id="sismo-principal">Cargando datos...</div>
-
-    <div id="lista-sismos" style="text-align: left; font-size: 0.75em; color: #444; line-height: 1.4; padding-left: 5px; border-top: 1px solid #eee; margin-top: 8px; padding-top: 5px;">
-    </div>
-
-    <div style="margin-top: 6px; font-size: 0.65em; color: #999; border-top: 1px solid #eee; padding-top: 4px;">
-        <i>Fuente: USGS (Actualizado en vivo)</i>
-    </div>
 </div>
 
 

@@ -1365,6 +1365,55 @@ window.addEventListener('load', cargarSismosZunigaFinal);
 setInterval(cargarSismosZunigaFinal, 300000);
 </script>
 
+<script>
+function generarNumerosDeLaSuerte() {
+    const ahora = new Date();
+    // Creamos una "semilla" basada en el año y la semana del año
+    const inicioAño = new Date(ahora.getFullYear(), 0, 1);
+    const semanaSugerida = Math.ceil((((ahora - inicioAño) / 86400000) + inicioAño.getDay() + 1) / 7);
+    const semilla = ahora.getFullYear() + semanaSugerida;
+
+    // Función simple de azar basada en la semilla
+    function azar(seed) {
+        var x = Math.sin(seed) * 10000;
+        return x - Math.floor(x);
+    }
+
+    let numeros = [];
+    let contador = 0;
+
+    // Generamos 6 números únicos entre 00 y 45
+    while (numeros.length < 6) {
+        let n = Math.floor(azar(semilla + contador) * 46);
+        let nFormateado = n < 10 ? '0' + n : n; // Para que el 5 se vea como 05
+        
+        if (!numeros.includes(nFormateado)) {
+            numeros.push(nFormateado);
+        }
+        contador++;
+    }
+
+    // Los ordenamos de menor a mayor
+    numeros.sort((a, b) => a - b);
+
+    // Dibujamos las bolillas en el HTML
+    const contenedor = document.getElementById('numeros-quini');
+    let htmlBolillas = "";
+    
+    numeros.forEach(num => {
+        htmlBolillas += `
+            <div style="background: white; color: #0c2461; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1rem; box-shadow: inset 0 -3px 5px rgba(0,0,0,0.2); border: 1px solid #ccc;">
+                ${num}
+            </div>`;
+    });
+    
+    contenedor.innerHTML = htmlBolillas;
+}
+
+// Ejecutar al cargar
+window.addEventListener('load', generarNumerosDeLaSuerte);
+</script>
+
 </body>
 
 <div id="radar-zuniga-final" style="background: #1e1e1e; border: 2px solid #ff4757; border-radius: 10px; padding: 15px; color: white; max-width: 400px; margin: 20px auto; display: block !important; visibility: visible !important;">
@@ -1373,6 +1422,17 @@ setInterval(cargarSismosZunigaFinal, 300000);
     </div>
     <div id="lista-sismos-nueva">
         <div style="color: #666; font-size: 0.8rem; text-align: center;">Iniciando sensores...</div>
+    </div>
+</div>
+<div id="panel-suerte-zuniga" style="background: linear-gradient(145deg, #1e3799, #0c2461); border: 2px solid #f1c40f; border-radius: 15px; padding: 15px; color: white; max-width: 350px; margin: 20px auto; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.3); clear: both;">
+    <div style="color: #f1c40f; font-weight: bold; text-transform: uppercase; font-size: 0.9rem; margin-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 5px;">
+        🍀 Números de la Suerte de la Semana
+    </div>
+    <div id="numeros-quini" style="display: flex; justify-content: center; gap: 8px; flex-wrap: wrap;">
+        <span style="font-size: 0.8rem;">Calculando tu suerte...</span>
+    </div>
+    <div style="margin-top: 10px; font-size: 0.7rem; color: #ced4da; font-style: italic;">
+        Cambiando el próximo lunes ✨
     </div>
 </div>
 

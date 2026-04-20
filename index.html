@@ -409,12 +409,29 @@ vertical-align: middle;
 </style>
 </head>
 <body>
-    <div class="marquesina-clima">
+    
+
+<div class="marquesina-clima">
         <div id="marquesina-dinamica" class="marquesina-content">
             <span class="marquesina-item">Sintonizando Estación Zúñiga...</span>
         </div>
     </div>
 
+    <div style="width: 100%; display: block; clear: both; background: #000; border-bottom: 2px solid #ff4757; padding: 6px 0; position: relative; z-index: 999;">
+        <div style="max-width: 1200px; margin: 0 auto; display: flex; align-items: center; overflow: hidden;">
+            <div style="background: #ff4757; color: #fff; padding: 2px 8px; font-weight: bold; font-size: 0.7rem; margin-left: 10px; border-radius: 3px; z-index: 10; animation: parpadeo 1s infinite;">
+                ALERTA
+            </div>
+            <marquee scrollamount="5" style="color: #fff; font-family: Arial; font-size: 0.9rem; font-weight: bold;">
+                <marquee scrollamount="5" style="color: #fff; font-family: Arial; font-size: 0.9rem; font-weight: bold;">
+    🏔️ PASO CRISTO REDENTOR: CERRADO POR NEVADAS ——— 🍃 AIRE: BUENO (ICA 35) ——— 🏠 ESTACIÓN ZÚÑIGA: INFORMACIÓN EN TIEMPO REAL
+</marquee>
+            </marquee>
+        </div>
+    </div>
+    <div class="overlay"></div>
+    <div class="wrapper">
+        
     <div class="overlay"></div>
 
     <div class="wrapper">
@@ -422,10 +439,8 @@ vertical-align: middle;
             <div class="clock-section">
                 <div id="clock">00:00</div><span id="ampm">--</span>
                 <div id="date" style="display: none;">--</div>
-                
 </div>
  
-
            
             <div class="weather-main-card">
                 <div class="city-selector">
@@ -1422,21 +1437,26 @@ window.addEventListener('load', generarNumerosDeLaSuerte);
 
 </body>
 
-<a href="https://www.anses.gob.ar/consultas/calendario-de-pagos" target="_blank" style="display: block; background: #0080FF; color: white; padding: 15px; margin: 10px auto; border-radius: 10px; text-decoration: none; font-weight: bold; text-align: center; max-width: 300px; border: 2px solid white;">
-    📅 CUÁNDO COBRO (ANSES)
-</a>
-
-
+<div style="clear: both; margin: 20px auto; max-width: 300px; text-align: center; position: relative; z-index: 9999;">
+    <a href="https://www.anses.gob.ar/consultas/calendario-de-pagos" 
+       target="_blank" 
+       style="display: block; background: #0080FF; color: #ffffff; padding: 15px; border-radius: 12px; border: 2px solid #ffffff; font-weight: bold; text-decoration: none; font-family: Arial, sans-serif; box-shadow: 0 4px 10px rgba(0,0,0,0.4); font-size: 1rem; text-transform: uppercase;">
+        📅 CONSULTAR PAGOS ANSES
+    </a>
+    <p style="font-size: 0.75rem; color: #fff; margin-top: 8px; font-weight: bold; text-shadow: 1px 1px 2px #000;">
+        (Toca el botón azul para abrir el calendario oficial)
+    </p>
+</div>
 <div id="transporte-zuniga" style="position: relative; z-index: 999999 !important; background: #000; border: 3px solid #3498db; border-radius: 15px; padding: 20px; margin: 30px auto; max-width: 300px; text-align: center; display: block !important;">
     
     <p style="color: #fff; font-weight: bold; font-family: Arial; margin-bottom: 20px;">🚍 Transporte Público</p>
     
     <a href="https://dicetourssrl.com/" target="_blank" style="display: block !important; visibility: visible !important; color: #fff !important; background: #e67e22 !important; padding: 20px; text-decoration: underline !important; font-weight: bold; border-radius: 10px; margin-bottom: 20px; font-family: Arial; border: 2px solid white;">
-       ABRIR DICETOURS 
+       DICETOURS 
     </a>
 
     <a href="https://nuevageneracion-este.site/" target="_blank" style="display: block !important; visibility: visible !important; color: #fff !important; background: #27ae60 !important; padding: 20px; text-decoration: underline !important; font-weight: bold; border-radius: 10px; font-family: Arial; border: 2px solid white;">
-       ABRIR N. GENERACIÓN
+       N. GENERACIÓN
     </a>
 
 </div>
@@ -1461,10 +1481,6 @@ window.addEventListener('load', generarNumerosDeLaSuerte);
     </div>
 </div>
 
-<div style="width: 100%; background: linear-gradient(90deg, #d32f2f, #b71c1c); color: white; margin: 25px 0; box-shadow: 0 4px 15px rgba(0,0,0,0.6); border-top: 2px solid #ff5252; border-bottom: 2px solid #ff5252; overflow: hidden;">
-    <marquee behavior="scroll" direction="left" scrollamount="8" style="font-family: 'Arial Black', Gadget, sans-serif; font-size: 18px; line-height: 50px; text-shadow: 2px 2px 4px rgba(0,0,0,0.7);">
-        ⚠️ <span style="color: #ffeb3b;">ALERTA:</span> Corte total Ruta Nacional 7. Tramo Ruta Internacional. Paso cerrado desde las 12:00 hs por nevadas<span style="color: #ffeb3b;"</span>  ESTACIÓN ZÚÑIGA ⚠️
-    </marquee>
 </div></div></div>
 <footer style="width: 100%; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(5px); color: white; text-align: center; padding: 15px 0; margin-top: 50px; border-top: 1px solid rgba(255,255,255,0.2);">
     <p style="margin: 0; font-family: 'Arial', sans-serif; font-size: 14px; letter-spacing: 2px; text-transform: uppercase; font-weight: bold;">

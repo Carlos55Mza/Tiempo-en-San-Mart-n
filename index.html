@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#007bff">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">   
 <link rel="manifest" href="manifest.json">    
 <meta charset="UTF-8">
@@ -1796,6 +1798,18 @@ if (molino) {
     }
 }
 
+</script>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+      navigator.serviceWorker.register('sw.js').then(function(registration) {
+        console.log('Estación Zúñiga: App lista y registrada');
+      }, function(err) {
+        console.log('Error al registrar la App:', err);
+      });
+    });
+  }
 </script>
 
 </body>

@@ -762,7 +762,6 @@ vertical-align: middle;
     <div style="font-size: 0.75em; color: #4285F4; font-weight: bold; margin-top: 5px;">📍 Cómo llegar</div>
 </a>
 
-
 </div>
 <div id="bunker-sismos-global" class="sismo-global-container" style="display: none;">
     <div class="sismo-titulo">🔴 ÚLTIMOS SISMOS MUNDIALES</div>
@@ -1076,8 +1075,8 @@ ticTac();
 </script>
 </div>
 </div>
-<script>
 
+<script>
    // Diccionario extendido de banderas
     function obtenerBanderaGlobal(lugar) {
         const texto = lugar.toUpperCase();
@@ -1932,6 +1931,53 @@ actualizarAire();
   }
 </script>
 
+<div id="btn-noticias" onclick="toggleNoticias()" style="position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; background: #00ebff; border-radius: 50%; box-shadow: 0 0 15px #00ebff; cursor: pointer; z-index: 10000; display: flex; align-items: center; justify-content: center; font-size: 24px; color: black;">
+    🗞️
+</div>
+
+<div id="panel-noticias" style="display: none; position: fixed; bottom: 90px; right: 20px; width: 300px; max-height: 400px; background: rgba(0,0,0,0.95); border: 2px solid #00ebff; border-radius: 15px; color: white; z-index: 10001; overflow-y: auto; padding: 15px; font-family: Arial, sans-serif; box-shadow: 0 0 20px rgba(0,235,255,0.3);">
+    <h3 style="margin-top: 0; color: #00ebff; border-bottom: 1px solid #00ebff; padding-bottom: 10px;">ÚLTIMO MOMENTO</h3>
+    <div id="lista-noticias-api">Cargando titulares...</div>
+    <button onclick="toggleNoticias()" style="width: 100%; margin-top: 15px; background: #333; color: white; border: none; padding: 8px; border-radius: 5px; cursor: pointer;">CERRAR</button>
+</div>
+
+<script>
+function toggleNoticias() {
+    const panel = document.getElementById('panel-noticias');
+    if (panel.style.display === "none") {
+        panel.style.display = "block";
+        cargarTitulares(); // Solo carga cuando se abre
+    } else {
+        panel.style.display = "none";
+    }
+}
+
+async function cargarTitulares() {
+    const contenedor = document.getElementById('lista-noticias-api');
+    const rssUrl = 'https://www.clarin.com/rss/lo-ultimo/'; 
+    const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
+
+    try {
+        const res = await fetch(apiUrl);
+        const datos = await res.json();
+
+        if (datos.status === 'ok') {
+            let html = "";
+            datos.items.slice(0, 5).forEach(item => { // Mostramos solo las 5 más nuevas
+                html += `
+                    <div style="margin-bottom: 15px; border-bottom: 1px solid #444; padding-bottom: 8px;">
+                        <a href="${item.link}" target="_blank" style="color: white; text-decoration: none; font-size: 14px; font-weight: bold;">
+                            ${item.title}
+                        </a>
+                    </div>`;
+            });
+            contenedor.innerHTML = html;
+        }
+    } catch (e) {
+        contenedor.innerHTML = "No se pudieron cargar las noticias. Reintentá en un momento.";
+    }
+}
+</script>
 </body>
 
 <div style="clear: both; margin: 20px auto; max-width: 300px; text-align: center; position: relative; z-index: 9999;">

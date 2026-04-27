@@ -765,6 +765,54 @@ vertical-align: middle;
     </a>
 </div>
     </div>
+<div style="text-align: center; margin: 30px auto; max-width: 300px; clear: both;">
+    <a href="https://terminalmendoza.com.ar/" target="_blank" class="boton-viajes terminal">
+        <span class="icono-transporte">🚌</span>
+        TERMINAL MENDOZA
+        <span class="subtitulo">Arribos y Partidas</span>
+    </a>
+</div>
+
+<style>
+    .boton-viajes {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        /* Un tono azul noche para diferenciarlo del aeropuerto */
+        background: radial-gradient(circle at center, #2c3e50 0%, #1a252f 100%);
+        border: 2px solid #f1c40f;
+        color: white;
+        padding: 15px 20px;
+        border-radius: 15px;
+        font-family: 'Arial Black', Gadget, sans-serif;
+        font-weight: bold;
+        font-size: 1.4rem;
+        text-transform: uppercase;
+        box-shadow: 0 8px 15px rgba(0,0,0,0.4);
+        transition: all 0.3s ease;
+    }
+
+    .boton-viajes .subtitulo {
+        font-size: 0.7rem;
+        font-weight: normal;
+        color: #ced4da;
+        margin-top: 3px;
+        font-family: Arial, sans-serif;
+    }
+
+    .boton-viajes .icono-transporte {
+        font-size: 1.6rem;
+        margin-bottom: 5px;
+    }
+
+    .boton-viajes:active {
+        transform: scale(0.95);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+</style>
+
 <div class="seccion-columna" style="display: block; width: 350px; float: left; clear: left; margin: 10px;">
     
     <div id="carrusel-publicidad" style="display: block; width: 100%; max-width: 400px; height: 180px; margin: 15px auto; overflow: hidden; border-radius: 8px; border: 3px solid #f1c40f; position: relative; font-family: sans-serif; background: #fff; box-shadow: 3px 3px 10px rgba(0,0,0,0.2); box-sizing: border-box;">
@@ -2099,6 +2147,43 @@ async function cargarTitulares() {
     </div>
 </div>
 </div>
+
+<div style="background: linear-gradient(145deg, #1e3799, #0c2461); border: 2px solid #f1c40f; border-radius: 15px; padding: 15px; color: white; max-width: 350px; margin: 20px auto; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.3); clear: both;">
+    
+    <div style="color: #f1c40f; font-weight: bold; text-transform: uppercase; font-size: 0.9rem; margin-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 5px;">
+        🍀 Números de la Suerte
+    </div>
+
+    <div style="display: flex; justify-content: center; gap: 8px; flex-wrap: wrap;">
+        <span class="bolilla-zuniga">08</span>
+        <span class="bolilla-zuniga">15</span>
+        <span class="bolilla-zuniga">24</span>
+        <span class="bolilla-zuniga">31</span>
+        <span class="bolilla-zuniga">42</span>
+        <span class="bolilla-zuniga">45</span>
+    </div>
+
+    <div style="margin-top: 10px; font-size: 0.7rem; color: #ced4da; font-style: italic;">
+        Actualizados: Lunes 27 de Abril ✨
+    </div>
+</div>
+
+<style>
+    .bolilla-zuniga {
+        background: radial-gradient(circle at 30% 30%, #f1c40f, #f39c12);
+        color: #000;
+        width: 35px;
+        height: 35px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        font-weight: bold;
+        font-size: 1.1rem;
+        box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+        border: 1px solid #d35400;
+    }
+</style>
 
 </div></div></div>
 <footer style="width: 100%; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(5px); color: white; text-align: center; padding: 15px 0; margin-top: 50px; border-top: 1px solid rgba(255,255,255,0.2);">
